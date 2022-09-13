@@ -23,7 +23,7 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         tableView.dataSource = self
         tableView.delegate = self 
         // Do any additional setup after loading the view.
-        print("hello")
+ 
         
         let url = URL(string: "https://api.themoviedb.org/3/movie/now_playing?api_key=a07e22bc18f5cb106bfe4cc1f83ad8ed")!
         let request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 10)
@@ -36,14 +36,11 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
                     let dataDictionary = try! JSONSerialization.jsonObject(with: data, options: []) as! [String: Any]
                  
                  
-                 
-                 
-                 
                  self.movies = dataDictionary["results"] as! [[String:Any]]
                  
                  self.tableView.reloadData()
 
-                 print(dataDictionary)
+    
                  // TODO: Get the array of movies
                     // TODO: Store the movies in a property to use elsewhere
                     // TODO: Reload your table view data
@@ -76,6 +73,23 @@ class MoviesViewController: UIViewController, UITableViewDataSource, UITableView
         cell.posterView.af_setImage(withURL: posterURL!)
         
         return cell
+    }
+    
+    //this is to prepare the next screen
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        print("loading..")
+        
+        //find the selective movie
+        let cell = sender as! UITableViewCell
+        let indexPath = tableView.indexPath(for: cell)!
+        let movie = movies[indexPath.row]
+        
+        //Pass the selective movie to the details ViewController
+        let detailsViewController = segue.destination as! MovieDetaisViewController
+        detailsViewController.movie = movie //calling movie from line88
+        
+        tableView.deselectRow(at: indexPath, animated: true)//to deselect the cell
+
     }
 
 }
